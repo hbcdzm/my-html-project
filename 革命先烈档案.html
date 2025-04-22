@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  /* 主样式 */
+  .revolution-archive {
+    font-family: "Microsoft YaHei", sans-serif;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #FFF5F5;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.1);
+  }
+  h1 {
+    color: #E74C3C;
+    text-align: center;
+    border-bottom: 2px solid #FFD700;
+    padding-bottom: 10px;
+  }
+  
+  /* 输入表单样式 */
+  .input-form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    border-left: 5px solid #E74C3C;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  label {
+    display: block;
+    color: #E74C3C;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  input[type="text"], 
+  textarea, 
+  select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #FFD700;
+    border-radius: 5px;
+  }
+  textarea {
+    height: 80px;
+  }
+  .submit-btn {
+    background: #E74C3C;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  /* 档案卡片样式 */
+  .archive-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-top: 5px solid #E74C3C;
+    position: relative;
+  }
+  .card-title {
+    color: #E74C3C;
+    border-bottom: 1px dashed #FFD700;
+    padding-bottom: 5px;
+    margin-top: 0;
+  }
+  .card-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  .delete-btn {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    background: #FFD700;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+  }
+  
+  /* 打印优化 */
+  @media print {
+    .input-form { display: none; }
+    .archive-card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="revolution-archive">
+  <h1>✧ 革命先烈理想信念档案搜集表 ✧</h1>
+  
+  <!-- 资料输入表单 -->
+  <div class="input-form">
+    <div class="form-group">
+      <label>先烈姓名</label>
+      <input type="text" id="martyr-name" placeholder="如：方志敏">
+    </div>
+    
+    <div class="form-group">
+      <label>生卒年份</label>
+      <input type="text" id="birth-death" placeholder="格式：1900-1935">
+    </div>
+    
+    <div class="form-group">
+      <label>历史身份</label>
+      <input type="text" id="identity" placeholder="如：东北抗日联军领导人">
+    </div>
+    
+    <div class="form-group">
+      <label>核心理想信念</label>
+      <textarea id="belief" placeholder="摘抄先烈的名言或概括其理想"></textarea>
+    </div>
+    
+    <div class="form-group">
+      <label>感人事迹</label>
+      <textarea id="story" placeholder="用50字左右描述一个典型事迹"></textarea>
+    </div>
+    
+    <div class="form-group">
+      <label>精神品质</label>
+      <div>
+        <label><input type="checkbox" class="spirit" value="坚定信仰"> 坚定信仰</label>
+        <label><input type="checkbox" class="spirit" value="英勇无畏"> 英勇无畏</label>
+        <label><input type="checkbox" class="spirit" value="艰苦奋斗"> 艰苦奋斗</label>
+        <label><input type="checkbox" class="spirit" value="忠诚为民"> 忠诚为民</label>
+        <input type="text" id="other-spirit" placeholder="其他品质" style="width:100px; margin-left:10px;">
+      </div>
+    </div>
+    
+    <button class="submit-btn" onclick="generateCard()">生成档案卡</button>
+  </div>
+  
+  <!-- 档案卡片展示区 -->
+  <div id="archive-container">
+    <!-- 示例卡片 -->
+    <div class="archive-card">
+      <button class="delete-btn" onclick="this.parentElement.remove()">×</button>
+      <h3 class="card-title">方志敏 (1900-1935)</h3>
+      <div class="card-content">
+        <div>
+          <p><strong>身份：</strong>东北抗日联军领导人</p >
+          <p><strong>理想信念：</strong>"敌人只能砍下我们的头颅，决不能动摇我们的信仰"</p >
+        </div>
+        <div>
+          <p><strong>感人事迹：</strong>在狱中写下《可爱的中国》等16篇文稿，坚信中国革命必定胜利</p >
+          <p><strong>精神品质：</strong>坚定信仰、英勇无畏、忠诚为民</p >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function generateCard() {
+    // 获取表单数据
+    const name = document.getElementById('martyr-name').value;
+    const birthDeath = document.getElementById('birth-death').value;
+    const identity = document.getElementById('identity').value;
+    const belief = document.getElementById('belief').value;
+    const story = document.getElementById('story').value;
+    
+    // 获取选中的精神品质
+    const spiritCheckboxes = document.querySelectorAll('.spirit:checked');
+    let spirits = Array.from(spiritCheckboxes).map(cb => cb.value);
+    const otherSpirit = document.getElementById('other-spirit').value;
+    if (otherSpirit) spirits.push(otherSpirit);
+    
+    // 创建档案卡HTML
+    const cardHTML = `
+    <div class="archive-card">
+      <button class="delete-btn" onclick="this.parentElement.remove()">×</button>
+      <h3 class="card-title">${name} (${birthDeath})</h3>
+      <div class="card-content">
+        <div>
+          <p><strong>身份：</strong>${identity}</p >
+          <p><strong>理想信念：</strong>${belief || '暂无'}</p >
+        </div>
+        <div>
+          <p><strong>感人事迹：</strong>${story || '暂无'}</p >
+          <p><strong>精神品质：</strong>${spirits.join('、') || '暂无'}</p >
+        </div>
+      </div>
+    </div>
+    `;
+    
+    // 添加到容器
+    document.getElementById('archive-container').insertAdjacentHTML('afterbegin', cardHTML);
+    
+    // 清空表单
+    document.getElementById('martyr-name').value = '';
+    document.getElementById('birth-death').value = '';
+    document.getElementById('identity').value = '';
+    document.getElementById('belief').value = '';
+    document.getElementById('story').value = '';
+    document.querySelectorAll('.spirit').forEach(cb => cb.checked = false);
+    document.getElementById('other-spirit').value = '';
+  }
+</script>
+
+</body>
+</html>
